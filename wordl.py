@@ -8,13 +8,17 @@ from string import ascii_letters, ascii_uppercase
 from rich.console import Console
 from rich.theme import Theme
 
-console = Console(width=40, theme=Theme({"warning": "red on yellow"}))
+console = Console(width=50, theme=Theme({"warning": "red on yellow"}))
 
-NUM_LETTERS = 5
-NUM_GUESSES = 6
+NUM_LETTERS = 0
+NUM_GUESSES = 0
 WORDS_PATH = pathlib.Path(__file__).parent / "wordlist.txt"
 
 def main():
+
+    # Asking for the size of the word
+    version()
+
     # Pre-process
     word = get_random_word(WORDS_PATH.read_text(encoding="utf-8").split("\n"))
     guesses = ["_" * NUM_LETTERS] * NUM_GUESSES
@@ -31,6 +35,22 @@ def main():
 
     # Post-process
     game_over(guesses, word, guessed_correctly=guesses[idx] == word)
+
+def version():
+    global NUM_LETTERS
+    global NUM_GUESSES
+    console.print(f"[bold white on blue]\nPlease select the size of Word.")
+    console.print(f"[bold blue]Available sizes:    5    6    7")
+    
+    while(True):
+            NUM_LETTERS = int(console.input(f"[bold white]Enter Choice: "))
+            print(NUM_LETTERS)
+            print(type(NUM_LETTERS))
+            if(NUM_LETTERS == 5 or NUM_LETTERS == 6 or NUM_LETTERS == 7):
+                NUM_GUESSES = NUM_LETTERS + 1
+                break
+            else:
+                print("Please enter valid input.")
 
 def refresh_page(headline):
     console.clear()
@@ -78,7 +98,8 @@ def game_over(guesses, word, guessed_correctly):
     show_guesses(guesses, word)
 
     if guessed_correctly:
-        console.print(f"\n[bold white on green]Correct, the word is {word}[/]")
+        console.print(f"\n[bold white on green] Correct, the word is {word} [/]")
+        console.print(f"[bold white on green] Number of tries: {len(guesses)} ")
     else:
         console.print(f"\n[bold white on red]Sorry, the word was {word}[/]")
 
